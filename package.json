@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/aligrant/Populo#readme",
   "dependencies": {
+    "dotenv": "^17.2.2",
     "phaser": "^3.90.0"
   },
   "devDependencies": {
