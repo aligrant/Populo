@@ -17,3 +17,14 @@ const config = {
 };
 
 window.game = new Phaser.Game(config);
+const infoBtn = document.getElementById("infoToggleBtn");
+const infoBox = document.getElementById("infoBox");
+
+// Toggle the info box visibility
+infoBtn.addEventListener("click", () => {
+  if (infoBox.style.display === "block") {
+    infoBox.style.display = "none";
+  } else {
+    infoBox.style.display = "block";
+  }
+});

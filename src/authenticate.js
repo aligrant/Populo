@@ -13,27 +13,31 @@
 // }
 
 //save and load player data
-// import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
-// async function savePlayerData(userId, data) {
-//   await setDoc(doc(db, "players", userId), data, { merge: true });
-// }
+async function savePlayerData(userId, data) {
+  await setDoc(doc(db, "players", userId), data, { merge: true });
+}
 
-// async function loadPlayerData(userId) {
-//   const docSnap = await getDoc(doc(db, "players", userId));
-//   if (docSnap.exists()) {
-//     return docSnap.data();
-//   } else {
-//     return null;
-//   }
-// }
+async function loadPlayerData(userId) {
+  const docSnap = await getDoc(doc(db, "players", userId));
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    return null;
+  }
+}
 const loginPopup = document.getElementById("login-signup");
 const loginBtn = document.getElementById("loginBtn");
 const closeBtn = document.getElementById("closeBtn");
 
 // Show the popup when "Login/Sign Up" is clicked
 loginBtn.addEventListener("click", () => {
-  loginPopup.style.display = "block";
+  if (loginPopup.style.display === "block") {
+    loginPopup.style.display = "none";
+  } else {
+    loginPopup.style.display = "block";
+  }
 });
 
 // Hide the popup when "X" is clicked
