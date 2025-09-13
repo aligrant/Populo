@@ -11,6 +11,8 @@ export default class GameScene extends Phaser.Scene {
 
     create() {
         const ROWS = 8, COLS = 5, CELL = 128;
+        this.ROWS = ROWS;
+        this.COLS = COLS;
         this.CELL = CELL;
 
         const size = Math.floor(CELL * 0.8);
@@ -28,16 +30,38 @@ export default class GameScene extends Phaser.Scene {
         this.spawnSprite(1, 1, 0);
         this.spawnSprite(2, 2, 1);
 
+        this.cellLayer = [];
+
+        for (let r = 0; r < this.ROWS; r++) {
+        this.cellLayer[r] = [];
+        for (let c = 0; c < this.COLS; c++) {
+            const { x, y } = cellCenter(r, c); // use the helper you defined
+
+            // draw rectangle cell
+            const cell = this.add.rectangle(x, y, this.CELL - 4, this.CELL - 4, 0xf5f5f5)
+            .setStrokeStyle(2, 0xcccccc)
+            .setOrigin(0.5);
+
+            // store reference
+            this.cellLayer[r][c] = cell;
+        }
+        }
+
+
+        
+
+        
+
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
             gameObject.x = dragX;
             gameObject.y = dragY;
         });
 
         this.input.on('dragend', (pointer, gameObject) => {
-      const col = Phaser.Math.Clamp(Math.floor(gameObject.x / CELL), 0, COLS - 1);
-      const row = Phaser.Math.Clamp(Math.floor(gameObject.y / CELL), 0, ROWS - 1);
-      const target = this.board[row][col];
-      const old = gameObject.getData('cell');
+        const col = Phaser.Math.Clamp(Math.floor(gameObject.x / CELL), 0, COLS - 1);
+        const row = Phaser.Math.Clamp(Math.floor(gameObject.y / CELL), 0, ROWS - 1);
+        const target = this.board[row][col];
+        const old = gameObject.getData('cell');
 
       // Case A: empty target cell -> move
       if (!target) {
