@@ -1,7 +1,9 @@
+import { doc } from "firebase/firestore";
+
 export default class GameScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'GameScene' });
-  }
+    constructor() {
+        super({ key: 'GameScene' });
+    }
 
     preload() {
         this.load.image('sprite-1', 'assets/placeholder1.png');
@@ -10,7 +12,20 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-        const ROWS = 6, COLS = 4, CELL = 128;
+        this.score = 0;
+
+        // Example score text
+        this.scoreElement = document.getElementById('score');
+        this.updateScoreText();
+
+        const ROWS = 6, COLS = 4;
+
+        const usableHeight = this.scale.height;
+        const usableWidth = this.scale.width;
+
+        const CELL = Math.min(usableWidth / COLS, usableHeight / ROWS);
+
+
         this.ROWS = ROWS;
         this.COLS = COLS;
         this.CELL = CELL;
@@ -18,7 +33,7 @@ export default class GameScene extends Phaser.Scene {
         const size = Math.floor(CELL * 0.1);
 
         const g = this.add.graphics();
-        // g.fillStyle(0xffcc66, 1);
+
         g.fillRoundedRect(0, 0, size, size, 12);
         g.generateTexture('sprite-text', size, size);
         g.destroy();
@@ -33,34 +48,28 @@ export default class GameScene extends Phaser.Scene {
         this.cellLayer = [];
 
         for (let r = 0; r < this.ROWS; r++) {
-        this.cellLayer[r] = [];
-        for (let c = 0; c < this.COLS; c++) {
-            const { x, y } = cellCenter(r, c); // use the helper you defined
+            this.cellLayer[r] = [];
+            for (let c = 0; c < this.COLS; c++) {
+                const { x, y } = cellCenter(r, c); // use the helper you defined
 
-            // draw rectangle cell
-            // const cell = this.add.rectangle(x, y, this.CELL - 4, this.CELL - 4, 0xf5f5f5)
-            // .setStrokeStyle(2, 0xcccccc)
-            // .setOrigin(0.5);
+                const g = this.add.graphics();
 
-            const g = this.add.graphics();
+                g.lineStyle(2, 0x1f2937, 1); // thickness, color, alpha
 
-            g.lineStyle(2, 0x1f2937, 1); // thickness, color, alpha
+                const halfW = (this.CELL - 4) / 2;
+                const halfH = (this.CELL - 4) / 2;
 
-            const halfW = (this.CELL - 4) / 2;
-            const halfH = (this.CELL - 4) / 2;
+                const thirdW = (this.CELL - 4) / 3;
+                const thirdH = (this.CELL - 4) / 3;
 
-            const thirdW = (this.CELL - 4) / 3;
-            const thirdH = (this.CELL - 4) / 3;
+                g.beginPath();
+                g.moveTo(x - thirdW, y + halfH); // left-bottom corner
+                g.lineTo(x + thirdW, y + halfH); // right-bottom corner
+                g.strokePath();
 
-            g.beginPath();
-            g.moveTo(x - thirdW, y + halfH); // left-bottom corner
-            g.lineTo(x + thirdW, y + halfH); // right-bottom corner
-            g.strokePath();
-
-            // store reference
-            this.cellLayer[r][c] = { border: g };
-            //this.cellLayer[r][c] = cell;
-        }
+                // store reference
+                this.cellLayer[r][c] = { border: g };
+            }
         }
 
 
@@ -70,124 +79,194 @@ export default class GameScene extends Phaser.Scene {
         });
 
         this.input.on('dragend', (pointer, gameObject) => {
-        const col = Phaser.Math.Clamp(Math.floor(gameObject.x / CELL), 0, COLS - 1);
-        const row = Phaser.Math.Clamp(Math.floor(gameObject.y / CELL), 0, ROWS - 1);
-        const target = this.board[row][col];
-        const old = gameObject.getData('cell');
+            const col = Phaser.Math.Clamp(Math.floor(gameObject.x / CELL), 0, COLS - 1);
+            const row = Phaser.Math.Clamp(Math.floor(gameObject.y / CELL), 0, ROWS - 1);
+            const target = this.board[row][col];
+            const old = gameObject.getData('cell');
 
-      // Case A: empty target cell -> move
-      if (!target) {
-        if (old) this.board[old.r][old.c] = null;
-        this.board[row][col] = gameObject;
-        gameObject.setData('cell', { r: row, c: col });
-        const { x, y } = cellCenter(row, col);
-        this.tweens.add({ targets: gameObject, x, y, duration: 150, ease: 'Power2' });
-        return;
-      }
-
-      // Case B: same level -> merge
-    if (target !== gameObject && target.getData('level') === gameObject.getData('level')) {
-    const newLevel = gameObject.getData('level') + 1;
-
-    // remove the target (merge it)
-    this.board[row][col] = null;
-    target.destroy();
-    if (old) this.board[old.r][old.c] = null;
-
-    gameObject.setData('level', newLevel);
-
-    // update label
-    const txt = gameObject.getByName('levelText');
-    if (txt) txt.setText(String(newLevel));
-
-    // update texture
-    const sprite = gameObject.list.find(child => child.type === 'Image');
-    if (sprite) {
-        const key = this.textures.exists(`sprite-${newLevel}`)
-        ? `sprite-${newLevel}`
-        : `sprite-1`;
-        sprite.setTexture(key);
-    }
-
-    this.board[row][col] = gameObject;
-    gameObject.setData('cell', { r: row, c: col });
-    const { x, y } = cellCenter(row, col);
-
-    // small animation to show merge
-    this.tweens.add({
-        targets: gameObject,
-        x,
-        y,
-        scaleX: 1.2,
-        scaleY: 1.2,
-        yoyo: true,
-        duration: 180,
-        ease: 'Power2'
-    });
-    gameObject.setPosition(x, y);
-    this.tweens.add({ targets: gameObject, x, y, duration: 100, ease: 'Power2' });
-
-    return;
-    }
-
-
-      // Case C: blocked / invalid -> snap back to original cell or nearest empty
-      if (old) {
-        const { x, y } = cellCenter(old.r, old.c);
-        this.tweens.add({ targets: gameObject, x, y, duration: 150, ease: 'Power2' });
-      } else {
-        // try to put in first empty cell
-        let placed = false;
-        for (let r = 0; r < ROWS && !placed; r++) {
-          for (let c = 0; c < COLS && !placed; c++) {
-            if (!this.board[r][c]) {
-              this.board[r][c] = gameObject;
-              gameObject.setData('cell', { r, c });
-              const { x, y } = cellCenter(r, c);
-              this.tweens.add({ targets: gameObject, x, y, duration: 150, ease: 'Power2' });
-              placed = true;
+            // Case A: empty target cell -> move
+            if (!target) {
+                if (old) this.board[old.r][old.c] = null;
+                this.board[row][col] = gameObject;
+                gameObject.setData('cell', { r: row, c: col });
+                const { x, y } = cellCenter(row, col);
+                this.tweens.add({ targets: gameObject, x, y, duration: 150, ease: 'Power2' });
+                return;
             }
-          }
-        }
-        if (!placed) {
-          // board full: send to center
-          this.tweens.add({ targets: gameObject, x: this.cameras.main.centerX, y: this.cameras.main.centerY, duration: 150 });
-        }
-      }
-    });
+
+            // Case B: same level -> merge
+            if (target !== gameObject && target.getData('level') === gameObject.getData('level')) {
+                const newLevel = gameObject.getData('level') + 1;
+
+                this.score = (newLevel - 1) * 2; // example scoring
+                this.updateScoreText();
+
+                // remove the target (merge it)
+                this.board[row][col] = null;
+                target.destroy();
+                if (old) this.board[old.r][old.c] = null;
+
+                gameObject.setData('level', newLevel);
+
+                // update label
+                const txt = gameObject.getByName('levelText');
+                if (txt) txt.setText(String(newLevel));
+
+                // update texture
+                const sprite = gameObject.list.find(child => child.type === 'Image');
+                if (sprite) {
+                    const key = this.textures.exists(`sprite-${newLevel}`)
+                        ? `sprite-${newLevel}`
+                        : `sprite-1`;
+                    sprite.setTexture(key);
+                }
+
+                this.board[row][col] = gameObject;
+                gameObject.setData('cell', { r: row, c: col });
+                const { x, y } = cellCenter(row, col);
+
+                // small animation to show merge
+                this.tweens.add({
+                    targets: gameObject,
+                    x,
+                    y,
+                    scaleX: 1.2,
+                    scaleY: 1.2,
+                    yoyo: true,
+                    duration: 180,
+                    ease: 'Power2'
+                });
+                gameObject.setPosition(x, y);
+                this.tweens.add({ targets: gameObject, x, y, duration: 100, ease: 'Power2' });
+
+                return;
+            }
 
 
+            // Case C: blocked / invalid -> snap back to original cell or nearest empty
+            if (old) {
+                const { x, y } = cellCenter(old.r, old.c);
+                this.tweens.add({ targets: gameObject, x, y, duration: 150, ease: 'Power2' });
+            } else {
+                // try to put in first empty cell
+                let placed = false;
+                for (let r = 0; r < ROWS && !placed; r++) {
+                    for (let c = 0; c < COLS && !placed; c++) {
+                        if (!this.board[r][c]) {
+                            this.board[r][c] = gameObject;
+                            gameObject.setData('cell', { r, c });
+                            const { x, y } = cellCenter(r, c);
+                            this.tweens.add({ targets: gameObject, x, y, duration: 150, ease: 'Power2' });
+                            placed = true;
+                        }
+                    }
+                }
+                if (!placed) {
+                    // board full: send to center
+                    this.tweens.add({ targets: gameObject, x: this.cameras.main.centerX, y: this.cameras.main.centerY, duration: 150 });
+                }
+            }
+        });
+
+
+        document.getElementById('save').addEventListener('click', () => this.saveGame());
+        document.getElementById('load').addEventListener('click', () => this.loadGame());
+
+        window.saveGame = () => this.saveGame();
+        window.loadGame = () => this.loadGame();
+
+    }
+
+    updateScoreText() {
+        if (this.scoreElement) {
+            this.scoreElement.textContent = `Score: ${this.score}`;
+        }
     }
 
 
 
     spawnSprite(level, row, col) {
-    const CELL = this.CELL;
-    const size = Math.floor(CELL * 0.8);
-    const x = col * CELL + CELL / 2;
-    const y = row * CELL + CELL / 2;
+        const CELL = this.CELL;
+        const size = Math.floor(CELL * 0.8);
+        const x = col * CELL + CELL / 2;
+        const y = row * CELL + CELL / 2;
 
-    const key = this.textures.exists(`sprite-${level}`) ? `sprite-${level}` : 'sprite-1';
-    const sprite = this.add.image(0, 0, key).setDisplaySize(size, size);
+        const key = this.textures.exists(`sprite-${level}`) ? `sprite-${level}` : 'sprite-1';
+        const sprite = this.add.image(0, 0, key).setDisplaySize(size, size);
 
-    
-    const levelText = this.add.text(0, 0, String(level), { fontSize: '24px', color: '#000' }).setOrigin(0.5);
-    levelText.setName('levelText');
 
-    const container = this.add.container(x, y, [sprite, levelText]);
+        const levelText = this.add.text(0, 0, String(level), { fontSize: '24px', color: '#000' }).setOrigin(0.5);
+        levelText.setName('levelText');
 
-    const w = size, h = size;
-    container.setSize(w, h);
+        const container = this.add.container(x, y, [sprite, levelText]);
 
-    // make the container interactive by giving it a rectangular hit area
-    container.setInteractive(new Phaser.Geom.Rectangle(-w / 4, -h / 4, w, h), Phaser.Geom.Rectangle.Contains);
+        const w = size, h = size;
+        container.setSize(w, h);
 
-    this.input.setDraggable(container);
+        // make the container interactive by giving it a rectangular hit area
+        container.setInteractive(new Phaser.Geom.Rectangle(-w / 4, -h / 4, w, h), Phaser.Geom.Rectangle.Contains);
 
-    container.setData('level', level);
-    container.setData('cell', { r: row, c: col });
+        this.input.setDraggable(container);
 
-    this.board[row][col] = container;
-  }
+        container.setData('level', level);
+        container.setData('cell', { r: row, c: col });
+
+        this.board[row][col] = container;
+    }
+
+    saveGame() {
+        const state = {
+            score: this.score,
+            board: this.board.map(row =>
+                row.map(cell => {
+                    if (!cell) return null;
+                    return {
+                        level: cell.getData('level'),
+                        row: cell.getData('cell').r,
+                        col: cell.getData('cell').c,
+                    };
+                })
+            ),
+        };
+
+        localStorage.setItem('gameState', JSON.stringify(state));
+        console.log('Game saved:', state);
+    }
+
+    loadGame() {
+        const saved = localStorage.getItem('gameState');
+        if (!saved) return console.warn('No saved game found');
+
+        const state = JSON.parse(saved);
+
+        // Restore score
+        this.score = state.score || 0;
+        this.updateScoreText();
+
+        // Clear board
+        for (let r = 0; r < this.ROWS; r++) {
+            for (let c = 0; c < this.COLS; c++) {
+                if (this.board[r][c]) {
+                    this.board[r][c].destroy();
+                    this.board[r][c] = null;
+                }
+            }
+        }
+
+        // Restore board
+        state.board.forEach(row => {
+            row.forEach(cell => {
+                if (cell) {
+                    this.spawnSprite(cell.level, cell.row, cell.col);
+                }
+            });
+        });
+
+        console.log('Game loaded:', state);
+    }
+
+
 }
+
+
 
