@@ -27,3 +27,16 @@
 //     return null;
 //   }
 // }
+const loginPopup = document.getElementById("login-signup");
+const loginBtn = document.getElementById("loginBtn");
+const closeBtn = document.getElementById("closeBtn");
+
+// Show the popup when "Login/Sign Up" is clicked
+loginBtn.addEventListener("click", () => {
+  loginPopup.style.display = "block";
+});
+
+// Hide the popup when "X" is clicked
+closeBtn.addEventListener("click", () => {
+  loginPopup.style.display = "none";
+});
