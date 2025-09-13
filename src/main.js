@@ -6,7 +6,7 @@ const config = {
   parent: 'game',
   width: 512,   
   height: 512,  
-  backgroundColor: '#10b981',
+  backgroundColor: 'lime',
   scene: [GameScene],
   scale: {
     mode: Phaser.Scale.RESIZE,
