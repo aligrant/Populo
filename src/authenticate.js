@@ -13,17 +13,17 @@
 // }
 
 //save and load player data
-import { doc, setDoc, getDoc } from "firebase/firestore";
+// import { doc, setDoc, getDoc } from "firebase/firestore";
 
-async function savePlayerData(userId, data) {
-  await setDoc(doc(db, "players", userId), data, { merge: true });
-}
+// async function savePlayerData(userId, data) {
+//   await setDoc(doc(db, "players", userId), data, { merge: true });
+// }
 
-async function loadPlayerData(userId) {
-  const docSnap = await getDoc(doc(db, "players", userId));
-  if (docSnap.exists()) {
-    return docSnap.data();
-  } else {
-    return null;
-  }
-}
+// async function loadPlayerData(userId) {
+//   const docSnap = await getDoc(doc(db, "players", userId));
+//   if (docSnap.exists()) {
+//     return docSnap.data();
+//   } else {
+//     return null;
+//   }
+// }
