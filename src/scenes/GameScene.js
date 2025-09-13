@@ -18,7 +18,7 @@ export default class GameScene extends Phaser.Scene {
         const g = this.add.graphics();
         // g.fillStyle(0xffcc66, 1);
         g.fillRoundedRect(0, 0, size, size, 12);
-        g.generateTexture('sprite-tex', size, size);
+        g.generateTexture('sprite-text', size, size);
         g.destroy();
 
         this.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
@@ -50,22 +50,48 @@ export default class GameScene extends Phaser.Scene {
       }
 
       // Case B: same level -> merge
-      if (target !== gameObject && target.getData('level') === gameObject.getData('level')) {
-        const newLevel = gameObject.getData('level') + 1;
-        // remove the target (merge it)
-        this.board[row][col] = null;
-        target.destroy();
-        if (old) this.board[old.r][old.c] = null;
-        gameObject.setData('level', newLevel);
-        // update displayed level label (container child named "levelText")
-        const txt = gameObject.getByName('levelText');
-        if (txt) txt.setText(String(newLevel));
-        this.board[row][col] = gameObject;
-        gameObject.setData('cell', { r: row, c: col });
-        const { x, y } = cellCenter(row, col);
-        this.tweens.add({ targets: gameObject, x, y, duration: 180, ease: 'Power2' });
-        return;
-      }
+    if (target !== gameObject && target.getData('level') === gameObject.getData('level')) {
+    const newLevel = gameObject.getData('level') + 1;
+
+    // remove the target (merge it)
+    this.board[row][col] = null;
+    target.destroy();
+    if (old) this.board[old.r][old.c] = null;
+
+    gameObject.setData('level', newLevel);
+
+    // update label
+    const txt = gameObject.getByName('levelText');
+    if (txt) txt.setText(String(newLevel));
+
+    // update texture
+    const sprite = gameObject.list.find(child => child.type === 'Image');
+    if (sprite) {
+        const key = this.textures.exists(`sprite-${newLevel}`)
+        ? `sprite-${newLevel}`
+        : `sprite-1`;
+        sprite.setTexture(key);
+    }
+
+    this.board[row][col] = gameObject;
+    gameObject.setData('cell', { r: row, c: col });
+    const { x, y } = cellCenter(row, col);
+
+    // small animation to show merge
+    this.tweens.add({
+        targets: gameObject,
+        x,
+        y,
+        scaleX: 1.2,
+        scaleY: 1.2,
+        yoyo: true,
+        duration: 180,
+        ease: 'Power2'
+    });
+
+    return;
+    }
+
 
       // Case C: blocked / invalid -> snap back to original cell or nearest empty
       if (old) {

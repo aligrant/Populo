@@ -4,9 +4,9 @@ import GameScene from './scenes/GameScene.js';
 const config = {
   type: Phaser.AUTO,
   parent: 'game',
-  width: 512,   
-  height: 512,  
-  backgroundColor: 'lime',
+  width: 512,
+  height: 512,
+  backgroundColor: '#cbd5e1',
   scene: [GameScene],
   scale: {
     mode: Phaser.Scale.RESIZE,
