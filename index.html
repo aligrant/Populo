@@ -7,19 +7,9 @@
     <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body>
-    <div id="game"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Game Login</title>
-</head>
-<body>
-  <h2>Game Login</h2>
 
+<div id="login-signup">
+  <h2>Game Login</h2>
   <!-- Signup -->
   <div>
     <h3>Sign Up</h3>
@@ -42,7 +32,14 @@
     <p id="user-email"></p>
     <button onclick="logout()">Logout</button>
   </div>
+</div>
 
-  <script type="module" src="app.js"></script>
-</body>
+    <div id="game"></div>
+
+    <script type="module" src="/src/firebaseAuth.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
+
+
+

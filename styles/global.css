@@ -7,4 +7,9 @@ body{
 }
 
 #game {
+   
+    flex: 0 0 80%;
+    width: 100%;
+    background-color: blueviolet;
+      
 }
