@@ -1,16 +1,16 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+// import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
-// Sign up
-async function signup(email, password) {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  console.log("New user:", userCredential.user);
-}
+// // Sign up
+// async function signup(email, password) {
+//   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+//   console.log("New user:", userCredential.user);
+// }
 
-// Log in
-async function login(email, password) {
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  console.log("Logged in:", userCredential.user);
-}
+// // Log in
+// async function login(email, password) {
+//   const userCredential = await signInWithEmailAndPassword(auth, email, password);
+//   console.log("Logged in:", userCredential.user);
+// }
 
 //save and load player data
 import { doc, setDoc, getDoc } from "firebase/firestore";

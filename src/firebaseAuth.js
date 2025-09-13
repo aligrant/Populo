@@ -15,8 +15,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+document.getElementById("signup-button").onclick = signup();
+document.getElementById("login-button").onclick = login;
+document.getElementById("logout-button").onclick = logout;
+
 // Sign up
-window.signup = async function() {
+async function signup() {
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
   try {
@@ -27,31 +31,31 @@ window.signup = async function() {
   }
 };
 
-// Log in
-window.login = async function() {
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert("Logged in!");
-  } catch (err) {
-    alert(err.message);
-  }
-};
+// // Log in
+// window.login = async function() {
+//   const email = document.getElementById("login-email").value;
+//   const password = document.getElementById("login-password").value;
+//   try {
+//     await signInWithEmailAndPassword(auth, email, password);
+//     alert("Logged in!");
+//   } catch (err) {
+//     alert(err.message);
+//   }
+// };
 
-// Log out
-window.logout = async function() {
-  await signOut(auth);
-};
+// // Log out
+// window.logout = async function() {
+//   await signOut(auth);
+// };
 
-// Track login state
-onAuthStateChanged(auth, user => {
-  const info = document.getElementById("user-info");
-  const emailEl = document.getElementById("user-email");
-  if (user) {
-    info.style.display = "block";
-    emailEl.textContent = "Logged in as: " + user.email;
-  } else {
-    info.style.display = "none";
-  }
-});
+// // Track login state
+// onAuthStateChanged(auth, user => {
+//   const info = document.getElementById("user-info");
+//   const emailEl = document.getElementById("user-email");
+//   if (user) {
+//     info.style.display = "block";
+//     emailEl.textContent = "Logged in as: " + user.email;
+//   } else {
+//     info.style.display = "none";
+//   }
+// });
