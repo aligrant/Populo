@@ -15,9 +15,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-document.getElementById("signup-button").onclick = signup();
-document.getElementById("login-button").onclick = login();
-document.getElementById("logout-button").onclick = logout();
+document.getElementById("signup-button").addEventListener("click", signup);
+document.getElementById("login-button").addEventListener("click", login);
+document.getElementById("logout-button").addEventListener("click", logout);
 
 // Sign up
 async function signup() {
