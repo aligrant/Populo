@@ -25,6 +25,7 @@ body{
     position: absolute;
     bottom: 20px;
     right: 20px;
+    width: 10%;
 }
 #login-signup {
   display: none; /* hidden by default */
@@ -42,5 +43,13 @@ body{
 #login-header {
 display: flex;
 justify-content: space-between;
+
+}
+#closeBtn{
+height: 2rem;
+width: 2rem;
+text-align: center;
+margin: auto;
+margin-right: 1rem;
 
 }
