@@ -10,12 +10,12 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-        const ROWS = 8, COLS = 5, CELL = 128;
+        const ROWS = 6, COLS = 4, CELL = 128;
         this.ROWS = ROWS;
         this.COLS = COLS;
         this.CELL = CELL;
 
-        const size = Math.floor(CELL * 0.8);
+        const size = Math.floor(CELL * 0.1);
 
         const g = this.add.graphics();
         // g.fillStyle(0xffcc66, 1);
@@ -38,19 +38,31 @@ export default class GameScene extends Phaser.Scene {
             const { x, y } = cellCenter(r, c); // use the helper you defined
 
             // draw rectangle cell
-            const cell = this.add.rectangle(x, y, this.CELL - 4, this.CELL - 4, 0xf5f5f5)
-            .setStrokeStyle(2, 0xcccccc)
-            .setOrigin(0.5);
+            // const cell = this.add.rectangle(x, y, this.CELL - 4, this.CELL - 4, 0xf5f5f5)
+            // .setStrokeStyle(2, 0xcccccc)
+            // .setOrigin(0.5);
+
+            const g = this.add.graphics();
+
+            g.lineStyle(2, 0x1f2937, 1); // thickness, color, alpha
+
+            const halfW = (this.CELL - 4) / 2;
+            const halfH = (this.CELL - 4) / 2;
+
+            const thirdW = (this.CELL - 4) / 3;
+            const thirdH = (this.CELL - 4) / 3;
+
+            g.beginPath();
+            g.moveTo(x - thirdW, y + halfH); // left-bottom corner
+            g.lineTo(x + thirdW, y + halfH); // right-bottom corner
+            g.strokePath();
 
             // store reference
-            this.cellLayer[r][c] = cell;
+            this.cellLayer[r][c] = { border: g };
+            //this.cellLayer[r][c] = cell;
         }
         }
 
-
-        
-
-        
 
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
             gameObject.x = dragX;
@@ -112,6 +124,8 @@ export default class GameScene extends Phaser.Scene {
         duration: 180,
         ease: 'Power2'
     });
+    gameObject.setPosition(x, y);
+    this.tweens.add({ targets: gameObject, x, y, duration: 100, ease: 'Power2' });
 
     return;
     }
@@ -166,7 +180,7 @@ export default class GameScene extends Phaser.Scene {
     container.setSize(w, h);
 
     // make the container interactive by giving it a rectangular hit area
-    container.setInteractive(new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h), Phaser.Geom.Rectangle.Contains);
+    container.setInteractive(new Phaser.Geom.Rectangle(-w / 4, -h / 4, w, h), Phaser.Geom.Rectangle.Contains);
 
     this.input.setDraggable(container);
 

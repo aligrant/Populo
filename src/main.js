@@ -5,14 +5,14 @@ const config = {
   type: Phaser.AUTO,
   parent: 'game',
   width: 512,
-  height: 512,
+  height: 589,
   backgroundColor: '#cbd5e1',
   scene: [GameScene],
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 512,
-    height: 512,
+    height: 589,
   },
 };
 
