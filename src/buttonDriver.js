@@ -25,7 +25,7 @@ setInterval(() => {
     fill.style.width = '0%';
     addFromButton()
   }
-}, 100);
+}, 50);
 
 
 function addFromButton(){

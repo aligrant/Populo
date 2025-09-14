@@ -1,8 +1,10 @@
 import { initializeApp } from "firebase/app";
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
+import { get } from "jquery";
+import { loadPlayerData, savePlayerData } from "./authenticate";
 
-
+var maxLevel = 1;
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -38,6 +40,7 @@ async function login() {
   const password = document.getElementById("login-password").value;
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    maxLevel = (await loadPlayerData()).maxLevel;
     alert("Logged in!");
   } catch (err) {
     alert(err.message);
@@ -46,6 +49,7 @@ async function login() {
 
 // Log out
 async function logout() {
+  savePlayerData(auth.currentUser.uid, { maxLevel });
   await signOut(auth);
 };
 
@@ -60,6 +64,30 @@ onAuthStateChanged(auth, user => {
     info.style.display = "none";
   }
  });
+
+ export function getMaxLevel() {
+  return maxLevel;
+ }
+ getMaxLevel();
+
+
+  export function setMaxLevel(level) {
+    if (level > maxLevel) {
+      maxLevel = level;
+      if (auth.currentUser) {
+        savePlayerData(auth.currentUser.uid, { maxLevel });
+      }
+    }
+  }
+  export function reloadMaxLevel() {
+    if (auth.currentUser) {
+      loadPlayerData(auth.currentUser.uid).then(data => {
+        if (data && data.maxLevel !== undefined) {
+          maxLevel = data.maxLevel;
+        }
+      });
+    }
+  }
 
 
 

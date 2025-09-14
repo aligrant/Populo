@@ -1,4 +1,5 @@
 import { doc } from "firebase/firestore";
+import {setMaxLevel, getMaxLevel, reloadMaxLevel} from "../firebaseAuth.js";
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -101,7 +102,13 @@ export default class GameScene extends Phaser.Scene {
             if (target !== gameObject && target.getData('level') === gameObject.getData('level')) {
                 const newLevel = gameObject.getData('level') + 1;
 
-                this.score += (newLevel - 1); // example scoring
+                if (newLevel > getMaxLevel()) {
+                    alert("New highest level reached: " + newLevel + "! Your max level will be saved.");
+                    setMaxLevel(newLevel);
+                    reloadMaxLevel();
+                }
+                
+                this.score += (newLevel - 1)*2;
                 this.updateScoreText();
 
                 // remove the target (merge it)

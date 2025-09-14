@@ -37,11 +37,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // --- Save & Load Functions ---
-async function savePlayerData(userId, data) {
+export async function savePlayerData(userId, data) {
   await setDoc(doc(db, "players", userId), data, { merge: true });
 }
 
-async function loadPlayerData(userId) {
+export async function loadPlayerData(userId) {
   const docSnap = await getDoc(doc(db, "players", userId));
   return docSnap.exists() ? docSnap.data() : null;
 }
@@ -77,11 +77,13 @@ document.getElementById("save").addEventListener("click", async () => {
 
 
 document.getElementById("load").addEventListener("click", async () => {
-  const user = auth.currentUser;
-  if (!user) {
-    return alert("You must be logged in to load your game.");
-  }
+  await readPlayerData();
+});
 
+
+async function readPlayerData() {
+  const user = auth.currentUser;
+  if (user) {
   try {
     const data = await loadPlayerData(user.uid);
     if (data) {
@@ -95,7 +97,6 @@ document.getElementById("load").addEventListener("click", async () => {
     console.error(err);
     alert("Error loading game: " + err.message);
   }
-});
-
-
+}
+}
 
