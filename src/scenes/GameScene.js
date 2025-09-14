@@ -169,11 +169,11 @@ export default class GameScene extends Phaser.Scene {
         });
 
 
-        document.getElementById('save').addEventListener('click', () => this.saveGame());
-        document.getElementById('load').addEventListener('click', () => this.loadGame());
+        // document.getElementById('save').addEventListener('click', () => this.saveGame());
+        // document.getElementById('load').addEventListener('click', () => this.loadGame());
 
         window.saveGame = () => this.saveGame();
-        window.loadGame = () => this.loadGame();
+        window.loadGame = (data) => this.loadGame(data);
 
     }
 
@@ -217,53 +217,57 @@ export default class GameScene extends Phaser.Scene {
     saveGame() {
         const state = {
             score: this.score,
-            board: this.board.map(row =>
-                row.map(cell => {
-                    if (!cell) return null;
-                    return {
-                        level: cell.getData('level'),
-                        row: cell.getData('cell').r,
-                        col: cell.getData('cell').c,
-                    };
-                })
-            ),
+            board: []
         };
 
-        localStorage.setItem('gameState', JSON.stringify(state));
-        console.log('Game saved:', state);
-    }
-
-    loadGame() {
-        const saved = localStorage.getItem('gameState');
-        if (!saved) return console.warn('No saved game found');
-
-        const state = JSON.parse(saved);
-
-        // Restore score
-        this.score = state.score || 0;
-        this.updateScoreText();
-
-        // Clear board
         for (let r = 0; r < this.ROWS; r++) {
             for (let c = 0; c < this.COLS; c++) {
-                if (this.board[r][c]) {
-                    this.board[r][c].destroy();
-                    this.board[r][c] = null;
+                const cell = this.board[r][c];
+                if (cell) {
+                    state.board.push({
+                        row: r,
+                        col: c,
+                        level: cell.getData('level')
+                    });
                 }
             }
         }
 
-        // Restore board
-        state.board.forEach(row => {
-            row.forEach(cell => {
-                if (cell) {
-                    this.spawnSprite(cell.level, cell.row, cell.col);
-                }
-            });
-        });
-
-        console.log('Game loaded:', state);
+        return state;
     }
+
+
+    loadGame(data) {
+        console.log("Loading game with data:", data);
+
+        if (!data?.board) return;
+
+    if (!data || !data.board) {
+        console.warn("No game data found to load.");
+        return;
+    }
+
+    // Restore score
+    this.score = data.score || 0;
+    this.updateScoreText();
+
+    // Clear current board
+    for (let r = 0; r < this.ROWS; r++) {
+        for (let c = 0; c < this.COLS; c++) {
+            if (this.board[r][c]) {
+                this.board[r][c].destroy();
+                this.board[r][c] = null;
+            }
+        }
+    }
+
+    // Restore tiles
+    data.board.forEach(cell => {
+        this.spawnSprite(cell.level, cell.row, cell.col);
+    });
+}
+
+
 
 
 }

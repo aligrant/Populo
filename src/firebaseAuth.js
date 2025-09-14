@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { serializeBoard, deserializeBoard } from "./boardState";
 
 
 
@@ -61,3 +60,7 @@ onAuthStateChanged(auth, user => {
     info.style.display = "none";
   }
  });
+
+
+
+
