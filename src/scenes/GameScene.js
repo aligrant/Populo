@@ -9,6 +9,8 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('sprite-1', 'assets/placeholder1.png');
         this.load.image('sprite-2', 'assets/placeholder2.png');
         this.load.image('sprite-3', 'assets/placeholder3.png');
+        this.load.image('sprite-4', 'assets/placeholder4.png');
+        this.load.image('sprite-5', 'assets/placeholder5.png');
     }
 
     create() {
@@ -44,6 +46,7 @@ export default class GameScene extends Phaser.Scene {
         this.spawnSprite(1, 0, 0);
         this.spawnSprite(1, 1, 0);
         this.spawnSprite(2, 2, 1);
+        
 
         this.cellLayer = [];
 
