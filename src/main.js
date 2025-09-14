@@ -34,14 +34,14 @@ const animalLinkEl = document.getElementById("animal-link");
 const closeUnlockBtn = document.getElementById("close-unlock");
 // Function to show popup when an animal is unlocked
 
-function showUnlockPopup(animal) {
-  // animal is an object like { name: "Vaquita", link: "https://example.com/vaquita" }
+// function showUnlockPopup(animal) {
+//   // animal is an object like { name: "Vaquita", link: "https://example.com/vaquita" }
 
-  animalNameEl.textContent = animal.name;
-  animalLinkEl.href = animal.link;
+//   animalNameEl.textContent = animal.name;
+//   animalLinkEl.href = animal.link;
 
-  unlockPopup.style.display = "block";
-}
+//   unlockPopup.style.display = "block";
+// }
 
 // Close popup
 closeUnlockBtn.addEventListener("click", () => {
@@ -139,5 +139,5 @@ const animals = {
 
 // Player just unlocked the vaquita
 
-showUnlockPopup(animals["vaquita"]);
+// showUnlockPopup(animals["vaquita"]);
 
