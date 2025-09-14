@@ -174,6 +174,7 @@ export default class GameScene extends Phaser.Scene {
 
         window.saveGame = () => this.saveGame();
         window.loadGame = (data) => this.loadGame(data);
+        window.spawnSprite = (level, row, col) => this.spawnSprite(level, row, col);
 
     }
 
