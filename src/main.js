@@ -34,35 +34,51 @@ const animalLinkEl = document.getElementById("animal-link");
 const closeUnlockBtn = document.getElementById("close-unlock");
 // Function to show popup when an animal is unlocked
 
-// function showUnlockPopup(animal) {
-//   // animal is an object like { name: "Vaquita", link: "https://example.com/vaquita" }
+export function showUnlockPopup(num) {
+    let animal;
 
-//   animalNameEl.textContent = animal.name;
-//   animalLinkEl.href = animal.link;
+        if(num==1){
+            animal = animals["vaquita"];
+        }
+        else if(num==2){
+            animal = animals["western-lowland-gorilla"];
+        }
+        else if(num==3){
+            animal = animals["yangtze-finless-porpoise"];
+        }
+        else if(num==4){
+            animal = animals["sunda-tiger"];
+        }
+        else if(num==5){
+            animal = animals["sumatran-rhino"];
+        }
 
-//   unlockPopup.style.display = "block";
-// }
+        animalNameEl.textContent = `New Animal Unlocked! \n ${animal.name}`;
+        animalLinkEl.href = animal.link;
+
+        document.getElementById('unlock-popup').style.display = "block";
+}
 
 // Close popup
 closeUnlockBtn.addEventListener("click", () => {
-  unlockPopup.style.display = "none";
+  document.getElementById('unlock-popup').style.display = "none";
 });
 
 // Optional: close if you click the backdrop
 window.addEventListener("click", (e) => {
-  if (e.target === unlockPopup) {
-    unlockPopup.style.display = "none";
+  if (e.target === document.getElementById('unlock-popup')) {
+    document.getElementById('unlock-popup').style.display = "none";
   }
 });
 closeUnlockBtn.addEventListener("click", () => {
-  unlockPopup.style.display = "none";
+  document.getElementById('unlock-popup').style.display = "none";
 
 });
 
 // Optional: close if you click the backdrop
 window.addEventListener("click", (e) => {
-  if (e.target === unlockPopup) {
-    unlockPopup.style.display = "none";
+  if (e.target === document.getElementById('unlock-popup')) {
+    document.getElementById('unlock-popup').style.display = "none";
   }
 });
 

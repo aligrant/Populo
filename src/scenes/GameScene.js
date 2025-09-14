@@ -1,5 +1,6 @@
 import { doc } from "firebase/firestore";
 import {setMaxLevel, getMaxLevel, reloadMaxLevel} from "../firebaseAuth.js";
+import { showUnlockPopup } from "../main.js";
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -7,10 +8,10 @@ export default class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('sprite-1', 'assets/placeholder1.png');
-        this.load.image('sprite-2', 'assets/placeholder2.png');
-        this.load.image('sprite-3', 'assets/placeholder3.png');
-        this.load.image('sprite-4', 'assets/placeholder4.png');
+        this.load.image('sprite-1', 'assets/Rhino.png');
+        this.load.image('sprite-2', 'assets/Gorilla.png');
+        this.load.image('sprite-3', 'assets/Dolphin.png');
+        this.load.image('sprite-4', 'assets/Tiger.png');
         this.load.image('sprite-5', 'assets/placeholder5.png');
     }
 
@@ -104,6 +105,7 @@ export default class GameScene extends Phaser.Scene {
 
                 if (newLevel > getMaxLevel()) {
                     //alert("New highest level reached: " + newLevel + "! Your max level will be saved.");
+                    showUnlockPopup(newLevel);
                     setMaxLevel(newLevel);
                     reloadMaxLevel();
                 }
