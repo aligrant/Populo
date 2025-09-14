@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { get } from "jquery";
+// import { get } from "jquery";
 import { loadPlayerData, savePlayerData } from "./authenticate";
 
 var maxLevel = 1;
