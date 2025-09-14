@@ -33,6 +33,7 @@ const animalNameEl = document.getElementById("animal-name");
 const animalLinkEl = document.getElementById("animal-link");
 const closeUnlockBtn = document.getElementById("close-unlock");
 // Function to show popup when an animal is unlocked
+
 function showUnlockPopup(animal) {
   // animal is an object like { name: "Vaquita", link: "https://example.com/vaquita" }
 

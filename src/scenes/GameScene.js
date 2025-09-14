@@ -103,7 +103,7 @@ export default class GameScene extends Phaser.Scene {
                 const newLevel = gameObject.getData('level') + 1;
 
                 if (newLevel > getMaxLevel()) {
-                    alert("New highest level reached: " + newLevel + "! Your max level will be saved.");
+                    //alert("New highest level reached: " + newLevel + "! Your max level will be saved.");
                     setMaxLevel(newLevel);
                     reloadMaxLevel();
                 }
