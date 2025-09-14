@@ -101,7 +101,7 @@ export default class GameScene extends Phaser.Scene {
             if (target !== gameObject && target.getData('level') === gameObject.getData('level')) {
                 const newLevel = gameObject.getData('level') + 1;
 
-                this.score = (newLevel - 1) * 2; // example scoring
+                this.score += (newLevel - 1); // example scoring
                 this.updateScoreText();
 
                 // remove the target (merge it)
